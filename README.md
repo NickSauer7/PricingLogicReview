@@ -5,7 +5,7 @@ This tool is for use in troubleshooting the Salesforce CPQ Price Waterfall.
 **Disclaimer**:  This is a very picky tool built to aid in an incredibly tedious process.  I am not a professional app developer as you'll obviously notice.  Hopefully it's still useful for your purposes.
 
 ## CPQ Price Waterfall Background:
-- https://help.salesforce.com/s/articleView?id=sf.cpq_quote_calc_process.htm&type=5
+- Salesforce Help:  https://help.salesforce.com/s/articleView?id=sf.cpq_quote_calc_process.htm&type=5
 - Laid out in nicer format:  https://archwise.io/cpq-pricing-logic-quickview/
 
 ## What Does it Do?
