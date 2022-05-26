@@ -1,0 +1,16 @@
+{
+  "status": 0,
+  "result": {
+    "createdById": "0055e000001g9LoAAI",
+    "createdByName": "Nick Sauer",
+    "createdDate": "1970-01-01T00:00:00.000Z",
+    "fileName": "labels/CustomLabels.labels",
+    "fullName": "CustomLabels",
+    "id": "",
+    "lastModifiedById": "0055e000001g9LoAAI",
+    "lastModifiedByName": "Nick Sauer",
+    "lastModifiedDate": "1970-01-01T00:00:00.000Z",
+    "namespacePrefix": "",
+    "type": "CustomLabels"
+  }
+}

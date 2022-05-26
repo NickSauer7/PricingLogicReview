@@ -1,0 +1,38 @@
+<!-- sldsValidatorIgnore -->
+<template>
+    <div style="background-color: white;">
+        <template if:true={spinner}>
+            <lightning-spinner variant="brand" size="large" alternative-text="Saving"></lightning-spinner>
+        </template>
+        <lightning-card class="slds-card_boundary" title={cardtitle} 
+            icon-name="standard:partner_marketing_budget">
+            <div class="slds-grid slds-gutters slds-var-p-around_x-small">
+                <div class="slds-col slds-size_1-of-2 slds-var-p-around_x-small">
+                    <lightning-combobox 
+                        name="event" 
+                        label="Select Event" 
+                        value={timingFilter}
+                        options={options} 
+                        onchange={handleOption}>
+                    </lightning-combobox>
+                </div>
+                <div class="slds-col slds-size_1-of-2 slds-var-p-around_x-small">
+                    <lightning-input type="search" label="Filter on Fields" onchange={handleSearch}
+                        placeholder="Enter Text from Field API Name">
+                    </lightning-input>
+                </div>
+            </div>
+            <div style="height: 800px;" class="slds-var-p-around_x-small">
+                <lightning-datatable
+                    key-field="unq"
+                    data={datanew}
+                    columns={columns}
+                    onsort={updateColumnSorting} 
+                    sorted-by={sortedBy} 
+                    hide-checkbox-column = true
+                    sorted-direction={sortedDirection}>
+                </lightning-datatable>
+            </div>  
+        </lightning-card>
+    </div>
+</template>
