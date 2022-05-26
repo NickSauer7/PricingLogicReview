@@ -1,5 +1,5 @@
 @isTest
-public with sharing class PriceLogicReviewCtrlTest {
+public with sharing class PricingLogicReviewCtrlTest {
 
     @TestSetup
     static void createTestData(){
