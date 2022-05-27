@@ -1,36 +1,35 @@
 public with sharing class PricingLogicReviewCtrl {
 
+    Static Integer idCount = 0;
+    Static String stringOnInit;
+    Static String stringOnBeforeCalculate;
+    Static String stringOnBeforePriceRules;
+    Static String stringOnAfterPriceRules;
+    Static String stringOnAfterCalculate;
+    Static String afterCalcRaw;
+    Static String afterPRRaw;
+    Static String beforePRRaw;
+    Static String beforeCalcRaw;
+    Static String qcpId;
+    Static String qcpName = System.Label.QCPName; //Label pointing to QCP Name for your Org
+
+    //Map to build sequential processing number - based on pricing waterfall
+    //https://help.salesforce.com/s/articleView?id=sf.cpq_quote_calc_process.htm&type=5
+    Static Map<String,Integer> seqMap = new Map<String,Integer>{
+        'On Initialization' => 1,
+        'onInit' => 2,
+        'onBeforeCalculate' => 3,
+        'Before Calculate' => 4,
+        'onBeforePriceRules' => 5,
+        'On Calculate' => 6,
+        'onAfterPriceRules' => 7,
+        'After Calculate' => 8,
+        'onAfterCalculate' => 9 
+    };
+
     @AuraEnabled (cacheable=true)
     public static List<wrapPR> getLogic(){
-        
-        //Map to build sequential processing number - based on pricing waterfall
-        //https://help.salesforce.com/s/articleView?id=sf.cpq_quote_calc_process.htm&type=5
-        Map<String,Integer> seqMap = new Map<String,Integer>{
-            'On Initialization' => 1,
-            'onInit' => 2,
-            'onBeforeCalculate' => 3,
-            'Before Calculate' => 4,
-            'onBeforePriceRules' => 5,
-            'On Calculate' => 6,
-            'onAfterPriceRules' => 7,
-            'After Calculate' => 8,
-            'onAfterCalculate' => 9 
-    	};
-            
-        //Variable declaration    
-        integer idCount = 0;
-        string stringOnInit;
-        string stringOnBeforeCalculate;
-        string stringOnBeforePriceRules;
-        string stringOnAfterPriceRules;
-        string stringOnAfterCalculate;
-        string afterCalcRaw;
-        string afterPRRaw;
-        string beforePRRaw;
-        string beforeCalcRaw;
-        string qcpId;
-        string qcpName = System.Label.QCPName; //Label pointing to QCP Name for your Org
-        
+
         //Section Lists out of QCP
         Set<String> afterCalcList = new Set<String>();
         Set<String> afterPRList = new Set<String>();
@@ -56,17 +55,7 @@ public with sharing class PricingLogicReviewCtrl {
         stringOnAfterCalculate = qcpString.split('function onAfterCalculate')[1].split('Promise.resolve')[0];
         afterCalcList = listMatches(stringOnAfterCalculate);
         for(String s : afterCalcList){
-            wrapPR thisWrapPR = new wrapPR();
-            if(idCount == 0) thisWrapPR.unq = 1;
-            if(idCount > 0) thisWrapPR.unq = idCount + 1;
-            thisWrapPR.obj = 'Quote Line';
-            thisWrapPR.fld = s;
-            thisWrapPR.timing = 'onAfterCalculate';
-            thisWrapPR.source = 'QCP';
-            thisWrapPR.parentUrl = '/'+qcpId;
-            thisWrapPR.parentName = 'QCP';
-            thisWrapPR.seq = seqMap.get(thisWrapPR.timing);
-            idCount ++;
+            wrapPR thisWrapPR = buildWrapPR(s,'onAfterCalculate');
             listPriceReview.add(thisWrapPR);
         }
         afterCalcRaw = qcpString.split('function onAfterCalculate')[0];
@@ -75,17 +64,7 @@ public with sharing class PricingLogicReviewCtrl {
         stringOnAfterPriceRules = afterCalcRaw.split('function onAfterPriceRules')[1].split('Promise.resolve')[0];
         afterPRList = listMatches(stringOnAfterPriceRules);
         for(String s : afterPRList){
-            wrapPR thisWrapPR = new wrapPR();
-            if(idCount == 0) thisWrapPR.unq = 1;
-            if(idCount > 0) thisWrapPR.unq = idCount + 1;
-            thisWrapPR.obj = 'Quote Line';
-            thisWrapPR.fld = s;
-            thisWrapPR.timing = 'onAfterPriceRules';
-            thisWrapPR.source = 'QCP';
-            thisWrapPR.parentUrl = '/'+qcpId;
-            thisWrapPR.parentName = 'QCP';
-            thisWrapPR.seq = seqMap.get(thisWrapPR.timing);
-            idCount ++;
+            wrapPR thisWrapPR = buildWrapPR(s,'onAfterPriceRules');
             listPriceReview.add(thisWrapPR);
         }
         afterPRRaw = afterCalcRaw.split('function onAfterPriceRules')[0];
@@ -94,17 +73,7 @@ public with sharing class PricingLogicReviewCtrl {
         stringOnBeforePriceRules = afterPRRaw.split('function onBeforePriceRules')[1].split('Promise.resolve')[0];
         beforePRList = listMatches(stringOnBeforePriceRules);
         for(String s : beforePRList){
-            wrapPR thisWrapPR = new wrapPR();
-            if(idCount == 0) thisWrapPR.unq = 1;
-            if(idCount > 0) thisWrapPR.unq = idCount + 1;
-            thisWrapPR.obj = 'Quote Line';
-            thisWrapPR.fld = s;
-            thisWrapPR.timing = 'onBeforePriceRules';
-            thisWrapPR.source = 'QCP';
-            thisWrapPR.parentUrl = '/'+qcpId;
-            thisWrapPR.parentName = 'QCP';
-            thisWrapPR.seq = seqMap.get(thisWrapPR.timing);
-            idCount ++;
+            wrapPR thisWrapPR = buildWrapPR(s,'onBeforePriceRules');
             listPriceReview.add(thisWrapPR);
         }
         beforePRRaw = afterPRRaw.split('function onBeforePriceRules')[0];
@@ -113,17 +82,7 @@ public with sharing class PricingLogicReviewCtrl {
         stringOnBeforeCalculate = beforePRRaw.split('function onBeforeCalculate')[1].split('Promise.resolve')[0];
         beforeCalcList = listMatches(stringOnBeforeCalculate);
         for(String s : beforeCalcList){
-            wrapPR thisWrapPR = new wrapPR();
-            if(idCount == 0) thisWrapPR.unq = 1;
-            if(idCount > 0) thisWrapPR.unq = idCount + 1;
-            thisWrapPR.obj = 'Quote Line';
-            thisWrapPR.fld = s;
-            thisWrapPR.timing = 'onBeforeCalculate';
-            thisWrapPR.source = 'QCP';
-            thisWrapPR.parentUrl = '/'+qcpId;
-            thisWrapPR.parentName = 'QCP';
-            thisWrapPR.seq = seqMap.get(thisWrapPR.timing);
-            idCount ++;
+            wrapPR thisWrapPR = buildWrapPR(s,'onBeforeCalculate');
             listPriceReview.add(thisWrapPR);
         }
         beforeCalcRaw = beforePRRaw.split('function onBeforeCalculate')[0];
@@ -132,17 +91,7 @@ public with sharing class PricingLogicReviewCtrl {
         stringOnInit = beforeCalcRaw.split('function onInit')[1].split('Promise.resolve')[0];
         onInitList = listMatches(stringOnInit);
         for(String s : onInitList){
-            wrapPR thisWrapPR = new wrapPR();
-            if(idCount == 0) thisWrapPR.unq = 1;
-            if(idCount > 0) thisWrapPR.unq = idCount + 1;
-            thisWrapPR.obj = 'Quote Line';
-            thisWrapPR.fld = s;
-            thisWrapPR.timing = 'onInit';
-            thisWrapPR.source = 'QCP';
-            thisWrapPR.parentUrl = '/'+qcpId;
-            thisWrapPR.parentName = 'QCP';
-            thisWrapPR.seq = seqMap.get(thisWrapPR.timing);
-            idCount ++;
+            wrapPR thisWrapPR = buildWrapPR(s,'onInit');
             listPriceReview.add(thisWrapPR);
         }
 
@@ -201,6 +150,22 @@ public with sharing class PricingLogicReviewCtrl {
         return listPriceReview;
     }
     
+    //Internal function to build the wrapper object
+    private static wrapPR buildWrapPR(String fieldName,String calcTiming){
+        wrapPR thisWrapPR = new wrapPR();
+        thisWrapPR.timing = calcTiming;
+        if(idCount == 0) thisWrapPR.unq = 1;
+        if(idCount > 0) thisWrapPR.unq = idCount + 1;
+        thisWrapPR.fld = fieldName;
+        thisWrapPR.obj = 'Quote Line';
+        thisWrapPR.source = 'QCP';
+        thisWrapPR.parentUrl = '/'+qcpId;
+        thisWrapPR.parentName = 'QCP';
+        thisWrapPR.seq = seqMap.get(thisWrapPR.timing);
+        idCount ++;
+        return thisWrapPR;
+    }
+
     //Run through matcher to get results from within tags
     private static Set<String> listMatches (String inputBlock){
         Set<String> returnResultsList = new Set<String>();
@@ -219,7 +184,6 @@ public with sharing class PricingLogicReviewCtrl {
             }
             returnResultsList.add(match);  
         }
-
         return returnResultsList;
     }
     
