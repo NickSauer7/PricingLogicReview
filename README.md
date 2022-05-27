@@ -20,9 +20,6 @@ This tool is for use in troubleshooting the Salesforce CPQ Price Waterfall.
 - Orders referenced fields by Price Waterfall step
 - Searchable and Sortable Table with Hyperlinks to records.
 
-## What Doesn't it Do?
-- Does not read Price Action formula fields - only target fields
-
 ## Installation
 - Create Custom Label titled 'QCPName' with your SBQQ__CustomScript__c record api name.
 - Create Controller and Test class from repository
