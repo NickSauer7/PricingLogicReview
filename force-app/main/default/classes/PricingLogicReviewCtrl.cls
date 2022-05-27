@@ -30,7 +30,7 @@ public with sharing class PricingLogicReviewCtrl {
     @AuraEnabled (cacheable=true)
     public static List<wrapPR> getLogic(){
 
-        //Section Lists out of QCP
+        //Section Lists out of QCP - one per QCP method.
         Set<String> afterCalcList = new Set<String>();
         Set<String> afterPRList = new Set<String>();
         Set<String> beforePRList = new Set<String>();
@@ -48,7 +48,7 @@ public with sharing class PricingLogicReviewCtrl {
             qcpName = 'TestQCP';
         }    
         qcp = [SELECT Id, SBQQ__Code__c FROM SBQQ__CustomScript__c WHERE Name = :qcpName LIMIT 1];                              
-        String qcpString = qcp.SBQQ__Code__c;
+        String qcpString = qcp.SBQQ__Code__c; //field from QCP that holds javascript logic.
         qcpId = qcp.Id; //use to form URL for QCP
         
         //After Calculate Section

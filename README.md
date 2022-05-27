@@ -1,6 +1,7 @@
 # CPQ - Pricing Logic Review
 
 This tool is for use in troubleshooting the Salesforce CPQ Price Waterfall.  
+![image](https://user-images.githubusercontent.com/47322464/170791870-586e27ac-84e6-4915-9159-88d425930ab5.png)
 
 **Disclaimer**:  This is a very picky tool built to aid in an incredibly tedious process.  It is pretty crude as primary audience is CPQ builder/troubleshooter.  Hopefully it's still useful for your purposes.
 
