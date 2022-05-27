@@ -54,8 +54,8 @@ public with sharing class PricingLogicReviewCtrl {
         //After Calculate Section
         stringOnAfterCalculate = qcpString.split('function onAfterCalculate')[1].split('Promise.resolve')[0];
         afterCalcList = listMatches(stringOnAfterCalculate);
-        for(String s : afterCalcList){
-            wrapPR thisWrapPR = buildWrapPR(s,'onAfterCalculate');
+        for(String eachField : afterCalcList){
+            wrapPR thisWrapPR = buildWrapPR(eachField,'onAfterCalculate');
             listPriceReview.add(thisWrapPR);
         }
         afterCalcRaw = qcpString.split('function onAfterCalculate')[0];
@@ -63,8 +63,8 @@ public with sharing class PricingLogicReviewCtrl {
         //After Price Rule Section
         stringOnAfterPriceRules = afterCalcRaw.split('function onAfterPriceRules')[1].split('Promise.resolve')[0];
         afterPRList = listMatches(stringOnAfterPriceRules);
-        for(String s : afterPRList){
-            wrapPR thisWrapPR = buildWrapPR(s,'onAfterPriceRules');
+        for(String eachField : afterPRList){
+            wrapPR thisWrapPR = buildWrapPR(eachField,'onAfterPriceRules');
             listPriceReview.add(thisWrapPR);
         }
         afterPRRaw = afterCalcRaw.split('function onAfterPriceRules')[0];
@@ -72,8 +72,8 @@ public with sharing class PricingLogicReviewCtrl {
         //Before Price Rule Section
         stringOnBeforePriceRules = afterPRRaw.split('function onBeforePriceRules')[1].split('Promise.resolve')[0];
         beforePRList = listMatches(stringOnBeforePriceRules);
-        for(String s : beforePRList){
-            wrapPR thisWrapPR = buildWrapPR(s,'onBeforePriceRules');
+        for(String eachField : beforePRList){
+            wrapPR thisWrapPR = buildWrapPR(eachField,'onBeforePriceRules');
             listPriceReview.add(thisWrapPR);
         }
         beforePRRaw = afterPRRaw.split('function onBeforePriceRules')[0];
@@ -81,8 +81,8 @@ public with sharing class PricingLogicReviewCtrl {
         //Before Calculation Section
         stringOnBeforeCalculate = beforePRRaw.split('function onBeforeCalculate')[1].split('Promise.resolve')[0];
         beforeCalcList = listMatches(stringOnBeforeCalculate);
-        for(String s : beforeCalcList){
-            wrapPR thisWrapPR = buildWrapPR(s,'onBeforeCalculate');
+        for(String eachField : beforeCalcList){
+            wrapPR thisWrapPR = buildWrapPR(eachField,'onBeforeCalculate');
             listPriceReview.add(thisWrapPR);
         }
         beforeCalcRaw = beforePRRaw.split('function onBeforeCalculate')[0];
@@ -90,8 +90,8 @@ public with sharing class PricingLogicReviewCtrl {
         //On Initialization Section
         stringOnInit = beforeCalcRaw.split('function onInit')[1].split('Promise.resolve')[0];
         onInitList = listMatches(stringOnInit);
-        for(String s : onInitList){
-            wrapPR thisWrapPR = buildWrapPR(s,'onInit');
+        for(String eachField : onInitList){
+            wrapPR thisWrapPR = buildWrapPR(eachField,'onInit');
             listPriceReview.add(thisWrapPR);
         }
 
