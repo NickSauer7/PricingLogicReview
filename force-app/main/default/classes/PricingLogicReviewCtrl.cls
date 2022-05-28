@@ -1,17 +1,8 @@
 public with sharing class PricingLogicReviewCtrl {
 
-    private static Integer idCount = 0;
-    /*private static String stringOnInit;
-    private static String stringOnBeforeCalculate;
-    private static String stringOnBeforePriceRules;
-    private static String stringOnAfterPriceRules;
-    private static String stringOnAfterCalculate;
-    private static String afterCalcRaw;
-    private static String afterPRRaw;
-    private static String beforePRRaw;
-    private static String beforeCalcRaw;*/
     private static String qcpId;
     private static String qcpName = System.Label.QCPName; //Label pointing to QCP Name for your Org
+    private static Integer idCount = 0; //not used, but leaving or row uniqueness in future
 
     //Map to build sequential processing number - based on pricing waterfall
     //https://help.salesforce.com/s/articleView?id=sf.cpq_quote_calc_process.htm&type=5
@@ -29,13 +20,6 @@ public with sharing class PricingLogicReviewCtrl {
 
     @AuraEnabled (cacheable=true)
     public static List<wrapPR> getLogic(){
-
-        //Section Sets of matches out of QCP - one per QCP method.
-        //Set<String> afterCalcList = new Set<String>();
-        //Set<String> afterPRList = new Set<String>();
-        //Set<String> beforePRList = new Set<String>();
-        //Set<String> beforeCalcList = new Set<String>();
-        //Set<String> onInitList = new Set<String>();
         
         //Combined list of QCP and Price Rules (in wrapper) to pass back to LWC
         List<wrapPR> listPriceReview = new List<wrapPR>();
@@ -47,7 +31,11 @@ public with sharing class PricingLogicReviewCtrl {
         if(Test.isRunningTest()){  //if test class, then use default Test Name.  
             qcpName = 'TestQCP';
         }    
-        qcp = [SELECT Id, SBQQ__Code__c FROM SBQQ__CustomScript__c WHERE Name = :qcpName LIMIT 1];                              
+        try{
+            qcp = [SELECT Id, SBQQ__Code__c FROM SBQQ__CustomScript__c WHERE Name = :qcpName LIMIT 1];  
+        }catch(Exception e){
+            throw new AuraHandledException('No QCP Found');
+        }                     
         String qcpString = qcp.SBQQ__Code__c; //field from QCP that holds javascript logic.
         qcpId = qcp.Id; //use to form URL for QCP
         
@@ -122,7 +110,7 @@ public with sharing class PricingLogicReviewCtrl {
             for(SBQQ__PriceAction__c pa : pr.SBQQ__PriceActions__r){
                 wrapPR thisWrapPR = new wrapPR();
                 if(idCount == 0) thisWrapPR.unq = 1;
-                if(idCount > 0) thisWrapPR.unq = idCount;
+                if(idCount > 0) thisWrapPR.unq = idCount + 1;
                 thisWrapPR.obj = pa.SBQQ__TargetObject__c;
             	thisWrapPR.fld = pa.SBQQ__Field__c;
                 if(splitCount == 0){
@@ -137,10 +125,11 @@ public with sharing class PricingLogicReviewCtrl {
                 thisWrapPR.parentName = pr.Name;
                 idCount ++;
                 listPriceReview.add(thisWrapPR);
-                if(splitCount > 0){
+                //if multiple events, assign field to each timing group by cloning and looping
+                if(splitCount > 0){ 
                     for(Integer i=1; i< splitCount; i++){
                         wrapPR cloneWrap = thisWrapPR.clone();
-                        cloneWrap.unq = idCount;
+                        cloneWrap.unq = idCount + 1;
                     	cloneWrap.timing = splitEval[i];
                     	cloneWrap.seq = seqMap.get(cloneWrap.timing);
                         idCount ++;
@@ -197,8 +186,8 @@ public with sharing class PricingLogicReviewCtrl {
     public class wrapPR {
         @AuraEnabled
         public integer seq {get;set;}
-        @AuraEnabled
-        public integer unq {get;set;}
+        @AuraEnabled 
+        public integer unq {get;set;} //not used, but leaving for row uniqueness in future
         @AuraEnabled
         public string obj {get;set;}
         @AuraEnabled

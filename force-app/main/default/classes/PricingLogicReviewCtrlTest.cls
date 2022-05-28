@@ -55,7 +55,7 @@ public with sharing class PricingLogicReviewCtrlTest {
     }
 
     @isTest 
-    static void getGetLogiShouldHave10Records(){
+    static void testGetLogiShouldHave10Records(){
         Test.startTest();
         List<PricingLogicReviewCtrl.wrapPR> listWrap = new List<PricingLogicReviewCtrl.wrapPR>();
         listWrap = PricingLogicReviewCtrl.getLogic();
@@ -78,6 +78,23 @@ public with sharing class PricingLogicReviewCtrlTest {
         System.assert(listPA.size() == 5, 'Price Rule should return 5 records overall');
         //Should be 5 total QCP results
         System.assert(listQCP.size() == 5, 'QCP should return 5 records overall');
+    }
+
+    @isTest 
+    static void testGetLogicWithBadQCPNameShouldError(){
+        SBQQ__CustomScript__c qcp = [SELECT Id, Name from SBQQ__CustomScript__c LIMIT 1];
+        qcp.Name = 'BadQCPName';
+        update qcp;
+        
+        Test.startTest();
+        List<PricingLogicReviewCtrl.wrapPR> listWrap = new List<PricingLogicReviewCtrl.wrapPR>();
+        try{
+            listWrap = PricingLogicReviewCtrl.getLogic();
+        }catch(Exception e){
+            System.assert(e != null,'exception should be thrown');
+        }
+        
+        Test.stopTest();
     }
 
 }

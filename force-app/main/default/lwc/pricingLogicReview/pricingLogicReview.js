@@ -88,7 +88,6 @@ export default class PricingLogicReview extends LightningElement {
                     this.options = [...this.options, {label: this.data[i].timing, value: this.data[i].timing}];
                 }
             }
-            console.log('this options: '+JSON.stringify(this.options));
             this.datanew = [...this.data];
             this.sortData('seq','asc');
             this.resultsSize = this.datanew.length;
@@ -100,12 +99,12 @@ export default class PricingLogicReview extends LightningElement {
         }
     }
 
-    handleOption(event) {
+    handleOption(event){
         this.timingFilter = event.target.value;
         this.filterData(this.searchFilter,this.timingFilter);
     }
 
-    handleSearch(event) {
+    handleSearch(event){
         this.searchFilter = event.target.value;
         //Add timeout to prevent DOM exception for lightning-datatable
         setTimeout( () => {
