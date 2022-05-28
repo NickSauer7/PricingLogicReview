@@ -55,19 +55,19 @@ public with sharing class PricingLogicReviewCtrlTest {
     }
 
     @isTest 
-    static void getGetLogiShouldHave5Records(){
+    static void getGetLogiShouldHave10Records(){
         Test.startTest();
-        List<CPQ_PricingLogicCtrl.wrapPR> listWrap = new List<CPQ_PricingLogicCtrl.wrapPR>();
-        listWrap = CPQ_PricingLogicCtrl.getLogic();
+        List<PricingLogicReviewCtrl.wrapPR> listWrap = new List<PricingLogicReviewCtrl.wrapPR>();
+        listWrap = PricingLogicReviewCtrl.getLogic();
         Test.stopTest();
 
         //Should be 10 results overall - 5 from PR and 5 from QCP
         System.assert(listWrap.size() == 10, 'Wrapper should return 10 records overall');
 
         //Check break down between Product Rule/Action and QCP
-        List<CPQ_PricingLogicCtrl.wrapPR> listPA = new List<CPQ_PricingLogicCtrl.wrapPR>();
-        List<CPQ_PricingLogicCtrl.wrapPR> listQCP = new List<CPQ_PricingLogicCtrl.wrapPR>();
-        for(CPQ_PricingLogicCtrl.wrapPR ele : listWrap){
+        List<PricingLogicReviewCtrl.wrapPR> listPA = new List<PricingLogicReviewCtrl.wrapPR>();
+        List<PricingLogicReviewCtrl.wrapPR> listQCP = new List<PricingLogicReviewCtrl.wrapPR>();
+        for(PricingLogicReviewCtrl.wrapPR ele : listWrap){
             if(ele.source == 'Price Rule'){
                 listPA.add(ele);
             }else{

@@ -1,7 +1,7 @@
 public with sharing class PricingLogicReviewCtrl {
 
     private static Integer idCount = 0;
-    private static String stringOnInit;
+    /*private static String stringOnInit;
     private static String stringOnBeforeCalculate;
     private static String stringOnBeforePriceRules;
     private static String stringOnAfterPriceRules;
@@ -9,7 +9,7 @@ public with sharing class PricingLogicReviewCtrl {
     private static String afterCalcRaw;
     private static String afterPRRaw;
     private static String beforePRRaw;
-    private static String beforeCalcRaw;
+    private static String beforeCalcRaw;*/
     private static String qcpId;
     private static String qcpName = System.Label.QCPName; //Label pointing to QCP Name for your Org
 
@@ -30,12 +30,12 @@ public with sharing class PricingLogicReviewCtrl {
     @AuraEnabled (cacheable=true)
     public static List<wrapPR> getLogic(){
 
-        //Section Lists out of QCP - one per QCP method.
-        Set<String> afterCalcList = new Set<String>();
-        Set<String> afterPRList = new Set<String>();
-        Set<String> beforePRList = new Set<String>();
-        Set<String> beforeCalcList = new Set<String>();
-        Set<String> onInitList = new Set<String>();
+        //Section Sets of matches out of QCP - one per QCP method.
+        //Set<String> afterCalcList = new Set<String>();
+        //Set<String> afterPRList = new Set<String>();
+        //Set<String> beforePRList = new Set<String>();
+        //Set<String> beforeCalcList = new Set<String>();
+        //Set<String> onInitList = new Set<String>();
         
         //Combined list of QCP and Price Rules (in wrapper) to pass back to LWC
         List<wrapPR> listPriceReview = new List<wrapPR>();
@@ -52,45 +52,50 @@ public with sharing class PricingLogicReviewCtrl {
         qcpId = qcp.Id; //use to form URL for QCP
         
         //After Calculate Section
-        stringOnAfterCalculate = qcpString.split('function onAfterCalculate')[1].split('Promise.resolve')[0];
-        afterCalcList = listMatches(stringOnAfterCalculate);
-        for(String eachField : afterCalcList){
+        String stringOnAfterCalculate = 
+            qcpString.split('function onAfterCalculate')[1].split('Promise.resolve')[0];
+        Set<String> afterCalcSet = getMatches(stringOnAfterCalculate);
+        for(String eachField : afterCalcSet){
             wrapPR thisWrapPR = buildWrapPR(eachField,'onAfterCalculate');
             listPriceReview.add(thisWrapPR);
         }
-        afterCalcRaw = qcpString.split('function onAfterCalculate')[0];
+        String afterCalcRaw = qcpString.split('function onAfterCalculate')[0];
         
         //After Price Rule Section
-        stringOnAfterPriceRules = afterCalcRaw.split('function onAfterPriceRules')[1].split('Promise.resolve')[0];
-        afterPRList = listMatches(stringOnAfterPriceRules);
-        for(String eachField : afterPRList){
+        String stringOnAfterPriceRules = 
+            afterCalcRaw.split('function onAfterPriceRules')[1].split('Promise.resolve')[0];
+        Set<String> afterPRSet = getMatches(stringOnAfterPriceRules);
+        for(String eachField : afterPRSet){
             wrapPR thisWrapPR = buildWrapPR(eachField,'onAfterPriceRules');
             listPriceReview.add(thisWrapPR);
         }
-        afterPRRaw = afterCalcRaw.split('function onAfterPriceRules')[0];
+        String afterPRRaw = afterCalcRaw.split('function onAfterPriceRules')[0];
         
         //Before Price Rule Section
-        stringOnBeforePriceRules = afterPRRaw.split('function onBeforePriceRules')[1].split('Promise.resolve')[0];
-        beforePRList = listMatches(stringOnBeforePriceRules);
-        for(String eachField : beforePRList){
+        String stringOnBeforePriceRules = 
+            afterPRRaw.split('function onBeforePriceRules')[1].split('Promise.resolve')[0];
+        Set<String> beforePRSet = getMatches(stringOnBeforePriceRules);
+        for(String eachField : beforePRSet){
             wrapPR thisWrapPR = buildWrapPR(eachField,'onBeforePriceRules');
             listPriceReview.add(thisWrapPR);
         }
-        beforePRRaw = afterPRRaw.split('function onBeforePriceRules')[0];
+        String beforePRRaw = afterPRRaw.split('function onBeforePriceRules')[0];
         
         //Before Calculation Section
-        stringOnBeforeCalculate = beforePRRaw.split('function onBeforeCalculate')[1].split('Promise.resolve')[0];
-        beforeCalcList = listMatches(stringOnBeforeCalculate);
-        for(String eachField : beforeCalcList){
+        String stringOnBeforeCalculate = 
+            beforePRRaw.split('function onBeforeCalculate')[1].split('Promise.resolve')[0];
+        Set<String> beforeCalcSet = getMatches(stringOnBeforeCalculate);
+        for(String eachField : beforeCalcSet){
             wrapPR thisWrapPR = buildWrapPR(eachField,'onBeforeCalculate');
             listPriceReview.add(thisWrapPR);
         }
-        beforeCalcRaw = beforePRRaw.split('function onBeforeCalculate')[0];
+        String beforeCalcRaw = beforePRRaw.split('function onBeforeCalculate')[0];
         
         //On Initialization Section
-        stringOnInit = beforeCalcRaw.split('function onInit')[1].split('Promise.resolve')[0];
-        onInitList = listMatches(stringOnInit);
-        for(String eachField : onInitList){
+        String stringOnInit = 
+            beforeCalcRaw.split('function onInit')[1].split('Promise.resolve')[0];
+        Set<String> onInitSet = getMatches(stringOnInit);
+        for(String eachField : onInitSet){
             wrapPR thisWrapPR = buildWrapPR(eachField,'onInit');
             listPriceReview.add(thisWrapPR);
         }
@@ -167,8 +172,9 @@ public with sharing class PricingLogicReviewCtrl {
     }
 
     //Internal function to run through matcher to get results from within tags
-    private static Set<String> listMatches (String inputBlock){
-        Set<String> returnResultsList = new Set<String>();
+    //Instead of repeating fields multple times for QCP, we'll put to set for uniqueness
+    private static Set<String> getMatches (String inputBlock){
+        Set<String> returnResultsSet = new Set<String>();
 
         //Match custom fields - for SBQQ this is fine aside from Id - not important for function
         Matcher single = Pattern.compile(Pattern.quote('line.record["') + '(.*?__c)'
@@ -182,9 +188,9 @@ public with sharing class PricingLogicReviewCtrl {
             }else{
                 match = single.group(1);
             }
-            returnResultsList.add(match);  
+            returnResultsSet.add(match);  
         }
-        return returnResultsList;
+        return returnResultsSet;
     }
     
     //Wrapper class definition

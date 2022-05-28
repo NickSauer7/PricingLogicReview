@@ -15,7 +15,7 @@ This tool is for use in troubleshooting the Salesforce CPQ Price Waterfall.
 - SBQQ Package must be installed. 
 
 ## What Does it Do?
-- Scans your QCP File for Field API Names
+- Scans your QCP File for Field API Names.  Gathers unique list per method.
 - Checks Price Action target fields for API Names
 - Buckets referenced fields by Source
 - Orders referenced fields by Price Waterfall step
