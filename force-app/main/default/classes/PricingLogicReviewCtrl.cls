@@ -1,21 +1,21 @@
 public with sharing class PricingLogicReviewCtrl {
 
-    Static Integer idCount = 0;
-    Static String stringOnInit;
-    Static String stringOnBeforeCalculate;
-    Static String stringOnBeforePriceRules;
-    Static String stringOnAfterPriceRules;
-    Static String stringOnAfterCalculate;
-    Static String afterCalcRaw;
-    Static String afterPRRaw;
-    Static String beforePRRaw;
-    Static String beforeCalcRaw;
-    Static String qcpId;
-    Static String qcpName = System.Label.QCPName; //Label pointing to QCP Name for your Org
+    private static Integer idCount = 0;
+    private static String stringOnInit;
+    private static String stringOnBeforeCalculate;
+    private static String stringOnBeforePriceRules;
+    private static String stringOnAfterPriceRules;
+    private static String stringOnAfterCalculate;
+    private static String afterCalcRaw;
+    private static String afterPRRaw;
+    private static String beforePRRaw;
+    private static String beforeCalcRaw;
+    private static String qcpId;
+    private static String qcpName = System.Label.QCPName; //Label pointing to QCP Name for your Org
 
     //Map to build sequential processing number - based on pricing waterfall
     //https://help.salesforce.com/s/articleView?id=sf.cpq_quote_calc_process.htm&type=5
-    Static Map<String,Integer> seqMap = new Map<String,Integer>{
+    private static Map<String,Integer> seqMap = new Map<String,Integer>{
         'On Initialization' => 1,
         'onInit' => 2,
         'onBeforeCalculate' => 3,
@@ -147,7 +147,7 @@ public with sharing class PricingLogicReviewCtrl {
 
         /***************************** PRICE ACTION END **************************************/
 
-        return listPriceReview;
+        return listPriceReview;  //final wrapper list to return to lwc
     }
     
     //Internal function to build the wrapper object
@@ -166,7 +166,7 @@ public with sharing class PricingLogicReviewCtrl {
         return thisWrapPR;
     }
 
-    //Run through matcher to get results from within tags
+    //Internal function to run through matcher to get results from within tags
     private static Set<String> listMatches (String inputBlock){
         Set<String> returnResultsList = new Set<String>();
 
