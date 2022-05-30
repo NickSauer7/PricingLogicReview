@@ -12,8 +12,5 @@ jsconfig.json
 # LWC Jest coverage reports
 coverage/
 
-# Dependency directories
-node_modules/
-
 # VS Code project settings
 .vscode/
