@@ -58,6 +58,8 @@ export default class PricingLogicReview extends LightningElement {
     ];
     @track timingFilter = '';
     @track searchFilter = '';
+    typeTime;
+    typeWait = 500;
     
     /*api v55 - supports virtual rendering.  giving error in table, so not using.
     //https://help.salesforce.com/s/articleView?id=release-notes.rn_lc_datatable.htm&type=5&release=238
@@ -106,19 +108,23 @@ export default class PricingLogicReview extends LightningElement {
 
     handleSearch(event){
         this.searchFilter = event.target.value;
-        //Add timeout to prevent DOM exception for lightning-datatable
-        setTimeout( () => {
+        //Add debounce to prevent DOM exception for lightning-datatable
+        clearTimeout(this.typeTime);
+        this.typeTime = setTimeout(() => {
             this.filterData(this.searchFilter,this.timingFilter);  
-        }, 1000);
+        }, this.typeWait);
     }
 
     filterData(search,option){
-        let regexsearch = new RegExp(search,'gi');
+        this.datatemp = [...this.data];
+        let regexsearch = new RegExp(search,'i');
         //getting error on child node when using lightning-datatable unless timeout set.
         if(option != '' && option != 'All'){
-            this.datanew = this.data.filter(row => row.timing == option && regexsearch.test(row.fld));
+            this.datanew = this.datatemp.filter(row => row.timing == option && regexsearch.test(row.fld));
+        }else if(search){
+            this.datanew = this.datatemp.filter(row => regexsearch.test(row.fld));
         }else{
-            this.datanew = this.data.filter(row => regexsearch.test(row.fld));
+            this.datanew = this.datatemp;
         }
         this.resultsSize = this.datanew.length;
         this.sortData('seq','asc');
