@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 import { LightningElement,wire,track } from 'lwc';
 import getLogic from '@salesforce/apex/PricingLogicReviewCtrl.getLogic';
 
