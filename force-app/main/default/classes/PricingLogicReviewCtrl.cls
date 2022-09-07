@@ -32,7 +32,9 @@ public with sharing class PricingLogicReviewCtrl {
             qcpName = 'TestQCP';
         }    
         try{
-            qcp = [SELECT Id, SBQQ__Code__c FROM SBQQ__CustomScript__c WHERE Name = :qcpName LIMIT 1];  
+            qcp = [SELECT Id, SBQQ__Code__c 
+                   FROM SBQQ__CustomScript__c 
+                   WHERE Name = :qcpName LIMIT 1];  
         }catch(Exception e){
             throw new AuraHandledException('No QCP Found');
         }                     
