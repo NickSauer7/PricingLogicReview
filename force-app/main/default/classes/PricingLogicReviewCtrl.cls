@@ -6,7 +6,7 @@ public with sharing class PricingLogicReviewCtrl {
 
     //Map to build sequential processing number - based on pricing waterfall
     //https://help.salesforce.com/s/articleView?id=sf.cpq_quote_calc_process.htm&type=5
-    private static Map<String,Integer> seqMap = new Map<String,Integer>{
+    private static Map<String,Integer> mapSequence = new Map<String,Integer>{
         'On Initialization' => 1,
         'onInit' => 2,
         'onBeforeCalculate' => 3,
@@ -88,9 +88,9 @@ public with sharing class PricingLogicReviewCtrl {
             listPriceReview.add(thisWrapPR);
         }
 
-        /*********************************** QCP END *******************************************/
+        //---------------------------------- QCP END -------------------------------------------/
         
-        /***************************** PRICE ACTION START **************************************/
+        //---------------------------- PRICE ACTION START --------------------------------------/
         
         //Build logic to query Price Actions for Active Price Rules only
         List<SBQQ__PriceRule__c> listPR = [SELECT Id, SBQQ__EvaluationEvent__c, Name,
@@ -109,16 +109,20 @@ public with sharing class PricingLogicReviewCtrl {
             //Loop through the related Price Actions for each Price Rule and add to Wrapper.
             for(SBQQ__PriceAction__c pa : pr.SBQQ__PriceActions__r){
                 wrapPR thisWrapPR = new wrapPR();
-                if(idCount == 0) thisWrapPR.unq = 1;
-                if(idCount > 0) thisWrapPR.unq = idCount + 1;
+                if(idCount == 0){
+                    thisWrapPR.unq = 1;
+                } 
+                if(idCount > 0){
+                    thisWrapPR.unq = idCount + 1;
+                } 
                 thisWrapPR.obj = pa.SBQQ__TargetObject__c;
             	thisWrapPR.fld = pa.SBQQ__Field__c;
                 if(splitCount == 0){
                     thisWrapPR.timing = pr.SBQQ__EvaluationEvent__c;
-                    thisWrapPR.seq = seqMap.get(pr.SBQQ__EvaluationEvent__c);
+                    thisWrapPR.seq = mapSequence.get(pr.SBQQ__EvaluationEvent__c);
                 }else{
                     thisWrapPR.timing = splitEval[0];
-                    thisWrapPR.seq = seqMap.get(thisWrapPR.timing);
+                    thisWrapPR.seq = mapSequence.get(thisWrapPR.timing);
                 }
             	thisWrapPR.source = 'Price Rule';
                 thisWrapPR.parentUrl = '/'+pr.Id;
@@ -131,7 +135,7 @@ public with sharing class PricingLogicReviewCtrl {
                         wrapPR cloneWrap = thisWrapPR.clone();
                         cloneWrap.unq = idCount + 1;
                     	cloneWrap.timing = splitEval[i];
-                    	cloneWrap.seq = seqMap.get(cloneWrap.timing);
+                    	cloneWrap.seq = mapSequence.get(cloneWrap.timing);
                         idCount ++;
                     	listPriceReview.add(cloneWrap);
                     }  
@@ -148,14 +152,18 @@ public with sharing class PricingLogicReviewCtrl {
     private static wrapPR buildWrapPR(String fieldName,String calcTiming){
         wrapPR thisWrapPR = new wrapPR();
         thisWrapPR.timing = calcTiming;
-        if(idCount == 0) thisWrapPR.unq = 1;
-        if(idCount > 0) thisWrapPR.unq = idCount + 1;
+        if(idCount == 0){
+            thisWrapPR.unq = 1;
+        } 
+        if(idCount > 0){ 
+            thisWrapPR.unq = idCount + 1;
+        }
         thisWrapPR.fld = fieldName;
         thisWrapPR.obj = 'Quote Line';
         thisWrapPR.source = 'QCP';
         thisWrapPR.parentUrl = '/'+qcpId;
         thisWrapPR.parentName = 'QCP';
-        thisWrapPR.seq = seqMap.get(thisWrapPR.timing);
+        thisWrapPR.seq = mapSequence.get(thisWrapPR.timing);
         idCount ++;
         return thisWrapPR;
     }
