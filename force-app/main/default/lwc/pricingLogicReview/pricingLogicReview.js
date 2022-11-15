@@ -132,12 +132,13 @@ export default class PricingLogicReview extends LightningElement {
     sortData(fieldName, sortDirection){
         let temp = JSON.parse(JSON.stringify(this.datanew));
         temp.sort((a,b) => {
-            if(a[fieldName] < b[fieldName])
+            if(a[fieldName] < b[fieldName]){
                 return sortDirection === 'asc' ? -1 : 1;
-            else if(a[fieldName] > b[fieldName])
+            }else if(a[fieldName] > b[fieldName]){
                 return sortDirection === 'asc' ? 1 : -1;
-            else
+            }else{
                 return 0;
+            }
         });
         this.datanew = temp;
     }
