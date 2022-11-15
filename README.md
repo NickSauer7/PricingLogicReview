@@ -1,7 +1,7 @@
 # CPQ - Pricing Logic Review
 
 This tool is for use in troubleshooting the Salesforce CPQ Price Waterfall.  
-![image](https://user-images.githubusercontent.com/47322464/170791870-586e27ac-84e6-4915-9159-88d425930ab5.png)
+![](PricingReviewLogic.gif)
 
 **Disclaimer**:  This is a very picky tool built to aid in an incredibly tedious process.  It is pretty crude as primary audience is CPQ builder/troubleshooter.  Hopefully it's still useful for your purposes.
 
@@ -15,16 +15,16 @@ This tool is for use in troubleshooting the Salesforce CPQ Price Waterfall.
 - SBQQ Package must be installed. 
 
 ## What Does it Do?
-- Scans your QCP File for Field API Names.  Gathers unique list per method.
+- Scans your QCP File for Field API Names.  Gathers unique list per QCP method.
 - Checks Price Action target fields for API Names
-- Buckets referenced fields by Source
-- Orders referenced fields by Price Waterfall step
-- Searchable and Sortable Table with Hyperlinks to records.
+- Buckets referenced fields by Source (QCP or Price Action)
+- Orders referenced fields by Price Waterfall calculation step
+- Searchable and Sortable Table with Hyperlinks to records for further review/adjustment
 
 ## Installation
 - Create Custom Label titled 'QCPName' with your SBQQ__CustomScript__c record api name.
 - Create Controller and Test class from repository
-- Note:  Depending on SBQQ version, you may have to adjust class .xml for dependency matching.
+- Note:  Depending on your SBQQ version, you may have to adjust class .xml for dependency matching.
 - Create LWC from repository
 - Add LWC to Lightning App Page, Home Page or Lightning Record Page.
 
@@ -39,7 +39,7 @@ This tool is for use in troubleshooting the Salesforce CPQ Price Waterfall.
 ## Future Enhancement Ideas
 - Distinguish between source fields and target fields in QCP
 - Price Action is looking at targeted fields currently which isn't quite what QCP is doing.  Add Source Field and Source Formula Field scans to also provide Price Action inputs.
-- Price Rule -> Error Conditions could be added, and fields gathered, so given additional source/triggering information
+- Price Rule -> Error Conditions could be added, and fields gathered, so additional source/triggering information can be given
 - Add Field Labels column and derive from Field API name to show in table for easier visibility
 - Prevent commented out lines from coming out of the QCP.
 - Add pagination to table.  
