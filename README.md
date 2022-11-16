@@ -38,9 +38,9 @@ This tool is for use in troubleshooting the Salesforce CPQ Price Waterfall.
 
 ## Future Enhancement Ideas
 - Distinguish between source fields and target fields in QCP
-- Price Action is looking at targeted fields currently which isn't quite what QCP is doing.  Add Source Field and Source Formula Field scans to also provide Price Action inputs.
+- ~~Price Action is looking at targeted fields currently which isn't quite what QCP is doing.  Add Source Field and Source Formula Field scans to also provide Price Action inputs.~~
 - Price Rule -> Error Conditions could be added, and fields gathered, so additional source/triggering information can be given
 - Add Field Labels column and derive from Field API name to show in table for easier visibility
-- Prevent commented out lines from coming out of the QCP.
+- Prevent commented out lines from coming out of the QCP.  May be tricky.
 - Add pagination to table.  
 - Give more conditional functionality/formatting control to user through api/input values.

@@ -64,8 +64,8 @@ export default class PricingLogicReview extends LightningElement {
         hideDefaultActions: true
     },
     {
-        label: 'Formula Inputs (Where Applicable)',
-        fieldName: 'formflds',
+        label: 'Formula or Source Input',
+        fieldName: 'sourceformflds',
         type: 'text',
         sortable: true,
         wrapText: true, 
@@ -142,13 +142,13 @@ export default class PricingLogicReview extends LightningElement {
             //this.datanew = this.datatemp.filter(row => row.timing == option && regexsearch.test(row.fld));
             this.datanew = 
                 this.datatemp.filter(
-                    row => row.timing == option && (regexsearch.test(row.fld) || regexsearch.test(row.formflds))
+                    row => row.timing == option && (regexsearch.test(row.fld) || regexsearch.test(row.sourceformflds))
                 );
         }else if(search){
             //this.datanew = this.datatemp.filter(row => regexsearch.test(row.fld));
             this.datanew = 
                 this.datatemp.filter(
-                    row => (regexsearch.test(row.fld) || regexsearch.test(row.formflds))
+                    row => (regexsearch.test(row.fld) || regexsearch.test(row.sourceformflds))
                 );
         }else{
             this.datanew = this.datatemp;

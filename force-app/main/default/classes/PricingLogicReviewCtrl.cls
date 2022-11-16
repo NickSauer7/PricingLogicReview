@@ -97,7 +97,7 @@ public with sharing class PricingLogicReviewCtrl {
         //Build logic to query Price Actions for Active Price Rules only
         List<SBQQ__PriceRule__c> listPR = [SELECT Id, SBQQ__EvaluationEvent__c, Name,
                                               (SELECT Id, SBQQ__TargetObject__c, SBQQ__Field__c,
-                                                SBQQ__Formula__c
+                                                SBQQ__Formula__c, SBQQ__ValueField__c
                                                FROM SBQQ__PriceActions__r 
                                                ORDER BY SBQQ__Field__c ASC) 
                                            FROM SBQQ__PriceRule__c WHERE SBQQ__Active__c = TRUE];
@@ -121,13 +121,14 @@ public with sharing class PricingLogicReviewCtrl {
                 } 
                 thisWrapPR.obj = pa.SBQQ__TargetObject__c;
                 thisWrapPR.fld = pa.SBQQ__Field__c;
-                //Start add function to get the values from formula
-                //if PA has formula, then it 
+                //Start add function to get the values from formula and source fields
                 if(pa.SBQQ__Formula__c != null){
-                    thisWrapPR.formflds = String.join(new List<String>(getFormulaMatches(pa.SBQQ__Formula__c)),', ');
-                    System.debug('setFieldsFromFormula: '+thisWrapPR.formflds);
-                    //End add function to get the values from formula.
+                    thisWrapPR.sourceformflds = 
+                        String.join(new List<String>(getFormulaMatches(pa.SBQQ__Formula__c)),', ');
+                }else if(pa.SBQQ__ValueField__c != null){
+                    thisWrapPR.sourceformflds = pa.SBQQ__ValueField__c;
                 }
+                //End add function to get the values from formula and source fields
                 if(splitCount == 0){
                     thisWrapPR.timing = pr.SBQQ__EvaluationEvent__c;
                     thisWrapPR.seq = mapSequence.get(pr.SBQQ__EvaluationEvent__c);
@@ -235,7 +236,7 @@ public with sharing class PricingLogicReviewCtrl {
         @AuraEnabled
         public string parentName {get;set;}
         @AuraEnabled
-        public string formflds {get;set;}
+        public string sourceformflds {get;set;}
     }
 
 }
