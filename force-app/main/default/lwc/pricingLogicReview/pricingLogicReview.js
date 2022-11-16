@@ -18,6 +18,8 @@ export default class PricingLogicReview extends LightningElement {
         type: 'text',
         sortable: true,
         initialWidth: 120,
+        wrapText: true, 
+        hideDefaultActions: true
     },
     {
         label: 'Type',
@@ -25,12 +27,17 @@ export default class PricingLogicReview extends LightningElement {
         type: 'text',
         sortable: true,
         initialWidth: 200,
+        wrapText: true, 
+        hideDefaultActions: true
     },
     {
         label: 'Timing',
         fieldName: 'timing',
         type: 'text',
         sortable: true,
+        initialWidth: 300,
+        wrapText: true, 
+        hideDefaultActions: true
     },
     {
         label: 'Parent',
@@ -43,6 +50,9 @@ export default class PricingLogicReview extends LightningElement {
             target: '_blank'
         },
         sortable: true,
+        initialWidth: 400,
+        wrapText: true, 
+        hideDefaultActions: true
     },
     {
         label: 'Field',
@@ -50,6 +60,16 @@ export default class PricingLogicReview extends LightningElement {
         type: 'text',
         sortable: true,
         initialWidth: 400,
+        wrapText: true, 
+        hideDefaultActions: true
+    },
+    {
+        label: 'Formula Inputs (Where Applicable)',
+        fieldName: 'formflds',
+        type: 'text',
+        sortable: true,
+        wrapText: true, 
+        hideDefaultActions: true
     }
     ];
     @track options = [
@@ -119,9 +139,17 @@ export default class PricingLogicReview extends LightningElement {
         let regexsearch = new RegExp(search,'i');
         //getting error on child node when using lightning-datatable unless timeout set.
         if(option != '' && option != 'All'){
-            this.datanew = this.datatemp.filter(row => row.timing == option && regexsearch.test(row.fld));
+            //this.datanew = this.datatemp.filter(row => row.timing == option && regexsearch.test(row.fld));
+            this.datanew = 
+                this.datatemp.filter(
+                    row => row.timing == option && (regexsearch.test(row.fld) || regexsearch.test(row.formflds))
+                );
         }else if(search){
-            this.datanew = this.datatemp.filter(row => regexsearch.test(row.fld));
+            //this.datanew = this.datatemp.filter(row => regexsearch.test(row.fld));
+            this.datanew = 
+                this.datatemp.filter(
+                    row => (regexsearch.test(row.fld) || regexsearch.test(row.formflds))
+                );
         }else{
             this.datanew = this.datatemp;
         }

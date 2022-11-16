@@ -96,7 +96,8 @@ public with sharing class PricingLogicReviewCtrl {
         
         //Build logic to query Price Actions for Active Price Rules only
         List<SBQQ__PriceRule__c> listPR = [SELECT Id, SBQQ__EvaluationEvent__c, Name,
-                                              (SELECT Id, SBQQ__TargetObject__c, SBQQ__Field__c 
+                                              (SELECT Id, SBQQ__TargetObject__c, SBQQ__Field__c,
+                                                SBQQ__Formula__c
                                                FROM SBQQ__PriceActions__r 
                                                ORDER BY SBQQ__Field__c ASC) 
                                            FROM SBQQ__PriceRule__c WHERE SBQQ__Active__c = TRUE];
@@ -110,6 +111,7 @@ public with sharing class PricingLogicReviewCtrl {
             }
             //Loop through the related Price Actions for each Price Rule and add to Wrapper.
             for(SBQQ__PriceAction__c pa : pr.SBQQ__PriceActions__r){
+                Set<String> setFieldsFromFormula = new Set<String>();
                 wrapPR thisWrapPR = new wrapPR();
                 if(idCount == 0){
                     thisWrapPR.unq = 1;
@@ -118,7 +120,14 @@ public with sharing class PricingLogicReviewCtrl {
                     thisWrapPR.unq = idCount + 1;
                 } 
                 thisWrapPR.obj = pa.SBQQ__TargetObject__c;
-            	thisWrapPR.fld = pa.SBQQ__Field__c;
+                thisWrapPR.fld = pa.SBQQ__Field__c;
+                //Start add function to get the values from formula
+                //if PA has formula, then it 
+                if(pa.SBQQ__Formula__c != null){
+                    thisWrapPR.formflds = String.join(new List<String>(getFormulaMatches(pa.SBQQ__Formula__c)),', ');
+                    System.debug('setFieldsFromFormula: '+thisWrapPR.formflds);
+                    //End add function to get the values from formula.
+                }
                 if(splitCount == 0){
                     thisWrapPR.timing = pr.SBQQ__EvaluationEvent__c;
                     thisWrapPR.seq = mapSequence.get(pr.SBQQ__EvaluationEvent__c);
@@ -191,6 +200,21 @@ public with sharing class PricingLogicReviewCtrl {
         }
         return returnResultsSet;
     }
+
+    //Internal function to run through formula and return fields found there.
+    private static Set<String> getFormulaMatches(String inputField){
+        Set<String> returnResultsSet = new Set<String>();
+
+        //Match fields - for SBQQ these will all be custom except Id.
+        Matcher single = Pattern.compile('(?i)\\b\\w*' + Pattern.quote('__c') + '\\w*\\b').matcher(inputField);
+
+        while(single.find()){
+            String match = '';
+            match = single.group(0);
+            returnResultsSet.add(match);  
+        }
+        return returnResultsSet;
+    }
     
     //Wrapper class definition
     public class wrapPR {
@@ -210,6 +234,8 @@ public with sharing class PricingLogicReviewCtrl {
         public string parentUrl {get;set;}
         @AuraEnabled
         public string parentName {get;set;}
+        @AuraEnabled
+        public string formflds {get;set;}
     }
 
 }
