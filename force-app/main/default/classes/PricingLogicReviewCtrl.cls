@@ -3,6 +3,8 @@ public with sharing class PricingLogicReviewCtrl {
     private static String qcpId;
     private static String qcpName = System.Label.QCPName; //Label pointing to QCP Name for your Org
     private static Integer idCount = 0; //not used, but leaving or row uniqueness in future
+    private static Map<String,Map<String,Schema.SObjectField>> mapObj2FieldMap = 
+        new Map<String,Map<String,Schema.SObjectField>>();
 
     //Map to build sequential processing number - based on pricing waterfall
     //https://help.salesforce.com/s/articleView?id=sf.cpq_quote_calc_process.htm&type=5
@@ -121,6 +123,11 @@ public with sharing class PricingLogicReviewCtrl {
                 } 
                 thisWrapPR.obj = pa.SBQQ__TargetObject__c;
                 thisWrapPR.fld = pa.SBQQ__Field__c;
+                //Label will be messy as standard will not be api name.
+                /*thisWrapPR.fldlabel = getFieldLabel(pa.SBQQ__TargetObject__c,pa.SBQQ__Field__c);
+                if(thisWrapPR.fldlabel != null){
+                    thisWrapPR.fld += ' ('+ thisWrapPR.fldlabel + ')';
+                }*/
                 //Start add function to get the values from formula and source fields
                 if(pa.SBQQ__Formula__c != null){
                     thisWrapPR.sourceformflds = 
@@ -216,6 +223,20 @@ public with sharing class PricingLogicReviewCtrl {
         }
         return returnResultsSet;
     }
+
+    /*
+    //Build label from api name for usability
+    private static String getFieldLabel(String objectApiName, String fieldApiName){
+        if(!mapObj2FieldMap.containsKey(objectApiName)){
+            mapObj2FieldMap.put(objectApiName,Schema.getGlobalDescribe().get(objectApiName).getDescribe().fields.getMap());
+        }
+        return mapObj2FieldMap.get(objectApiName).get(fieldApiName).getDescribe().getLabel();
+    }
+
+    //Custom picklist values will be proper Object Api Name
+    //Standard package picklist values (Quote, Quote Line) will be label instead.
+    private static String getObjectApiName(String objectLabel){}
+    */
     
     //Wrapper class definition
     public class wrapPR {
@@ -227,6 +248,8 @@ public with sharing class PricingLogicReviewCtrl {
         public string obj {get;set;}
         @AuraEnabled
         public string fld {get;set;}
+        //@AuraEnabled
+        //public string fldlabel {get;set;}
         @AuraEnabled
         public string timing {get;set;}
         @AuraEnabled
